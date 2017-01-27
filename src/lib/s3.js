@@ -9,7 +9,7 @@ function makeParams(bucket, keyPrefix, name, version) {
   let key = versionKey(name, version);
   return {
     Bucket:     bucket,
-    Prefix:     `${keyPrefix}/${key}`,
+    Key:        `${keyPrefix}/${key}`,
   };
 }
 
