@@ -1,0 +1,18 @@
+{
+  "author": {
+    "name": "Cory Mawhorter",
+    "email": "cory.mawhorter@gmail.com",
+    "url": "http://www.mawhorter.net/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cmawhorter/betty-repo-demo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cmawhorter/betty-repo-demo/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "betty": "github:cmawhorter/betty"
+  }
+}
