@@ -18,7 +18,7 @@ export function read(bucket, keyPrefix, name, version, callback) {
 }
 
 export function write(bucket, keyPrefix, resource, version, callback) {
-  let params          = makeParams(bucket, keyPrefix, resource.name, version || resource.version);
+  let params          = makeParams(bucket, keyPrefix, resource.name, version);
   console.log('s3.write', params);
   params.ContentType  = 'application/json';
   params.Body         = JSON.stringify(resource, null, 2);

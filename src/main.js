@@ -11,17 +11,17 @@ export default {
     let bucket      = `${BUCKET_ROOT_NAME}-${accountId}`;
     let keyPrefix   = process.env.BUCKET_PREFIX;
     if (!keyPrefix) return callback(new Error('cannot continue because key prefix is not set'));
-    console.log('Event', event);
-    console.log('Bucket', bucket);
+    console.log('Event',      event);
+    console.log('Bucket',     bucket);
     console.log('Key Prefix', keyPrefix);
     switch (method) {
       case 'get':
         return s3Read(bucket, keyPrefix, body.name, body.version, callback);
       case 'publish':
-        let data = processResourceJson(body);
+        let data = processResourceJson(body.resource);
         return s3Write(bucket, keyPrefix, data, 'latest', (err) => {
           if (err) return callback(err);
-          s3Write(bucket, keyPrefix, data, null, callback);
+          s3Write(bucket, keyPrefix, data, body.version, callback);
         });
       default:
         return callback(new Error(`unsupported method: ${method}`));

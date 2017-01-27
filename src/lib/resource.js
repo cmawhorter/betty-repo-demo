@@ -3,7 +3,6 @@ const WHITELIST = [
   'region',
   'name',
   'description',
-  'version',
   'repository',
   'author',
   'contributors',

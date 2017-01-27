@@ -1,4 +1,4 @@
-if (!global.BETTY) throw new Error('depends on betty context to be correct');
+if (!global.betty) throw new Error('depends on betty context to be correct');
 
 // some reusable values for the sake of laziness.  not required to do this.
 const NAME     = 'central-internal-resource-registry';
