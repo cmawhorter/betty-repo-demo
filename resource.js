@@ -74,7 +74,7 @@ module.exports = {
   // if this resource will be used by other resources there should be an
   // npm-installable api client string here.  e.g. github repo
   // i.e. you should be able to `npm install require('resource.js').client --save`
-  // client: '',
+  client:               'github:cmawhorter/betty-repo-demo-client',
   // there should be some way to monitor whether this resource is in a healthy
   // state or not.  ideally a website.
   // health: '',

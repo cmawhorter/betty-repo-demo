@@ -11,7 +11,7 @@ export default {
     let keyPrefix   = process.env.BUCKET_PREFIX;
     switch (method) {
       case 'get':
-        return s3Read(bucket, keyPrefix, body.service, body.version, callback);
+        return s3Read(bucket, keyPrefix, body.name, body.version, callback);
       case 'publish':
         return s3WriteVersion(bucket, keyPrefix, body, callback);
       default:
