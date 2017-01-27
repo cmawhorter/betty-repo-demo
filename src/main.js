@@ -9,6 +9,9 @@ export default {
     let accountId   = context.invokedFunctionArn.split(':')[4];
     let bucket      = `${BUCKET_ROOT_NAME}-${accountId}`;
     let keyPrefix   = process.env.BUCKET_PREFIX;
+    console.log('Event', event);
+    console.log('Bucket', bucket);
+    console.log('Key Prefix', keyPrefix);
     switch (method) {
       case 'get':
         return s3Read(bucket, keyPrefix, body.name, body.version, callback);
