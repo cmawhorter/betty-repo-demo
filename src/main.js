@@ -13,7 +13,10 @@ export default {
       case 'get':
         return s3Read(bucket, keyPrefix, body.name, body.version, callback);
       case 'publish':
-        return s3WriteVersion(bucket, keyPrefix, body, callback);
+        return s3WriteVersion(bucket, keyPrefix, body, 'latest', (err) => {
+          if (err) return callback(err);
+          s3WriteVersion(bucket, keyPrefix, body, null, callback);
+        });
       default:
         return callback(new Error(`unsupported method: ${method}`));
     }
