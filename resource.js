@@ -50,7 +50,7 @@ module.exports = {
   assets: [
     {
       service:          's3',
-      name:             `${NAME}-${BETTY.aws.accountId}`,
+      name:             `${NAME}-${BETTY.aws.accountId}/*`,
       permissions:      [ 's3:GetObject', 's3:PutObject' ]
     }
   ],
