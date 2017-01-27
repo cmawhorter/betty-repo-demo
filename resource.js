@@ -1,21 +1,15 @@
 if (!global.BETTY) throw new Error('depends on betty context to be correct');
 
 // some reusable values for the sake of laziness.  not required to do this.
-const NAME      = 'central-internal-resource-registry';
-const VERSION   = '0000-00-00';
-const REGIONS   = [ 'us-west-2', 'us-east-1' ];
+const NAME     = 'central-internal-resource-registry';
+const REGIONS  = [ 'us-west-2', 'us-east-1' ];
 
 module.exports = {
   // which regions will have this resource available.  it mainly impacts the IAM policies
   // that are generated.  it does not impact update/deploy, which is manually controlled
-  "region":           REGIONS,
-
+  region:             REGIONS,
   // required.  becomes the resource id in the registry as well as the lambda function name (if applicable)
   name:               NAME,
-  // required.
-  //   - for lambda services, this is a function alias
-  //   - for not-lambda, this is the AWS api version for the service
-  version:            VERSION,
   // same as package.json
   description:        'A central registry for internal microservices (resources).',
   // where the source code behind this resource.js(on) file lives
@@ -41,7 +35,7 @@ module.exports = {
     source:             'src/main.js',
     main:               'dist/index.js',
     entry:              'index.handler',
-    environment:        require(`${BETTY.cwd}/env-${BETTY.env}.json`)
+    environment:        require(`${betty.utils.cwd}/env-${betty.env}.json`)
   },
   // what aws services does this resource require internally?  and what permissions?
   // these get automatically added as inline policies to this resource's role
@@ -50,7 +44,7 @@ module.exports = {
   assets: [
     {
       service:          's3',
-      name:             `${NAME}-${BETTY.aws.accountId}/*`,
+      name:             `${NAME}-${betty.aws.accountId}/*`,
       permissions:      [ 's3:GetObject', 's3:PutObject' ]
     }
   ],
@@ -61,7 +55,6 @@ module.exports = {
     {
       service:          'lambda',
       region:           REGIONS,
-      // name:             `${NAME}:${VERSION}`, // would limit to a specific version of this resource
       name:             `${NAME}`,
       permissions:      [ 'lambda:InvokeFunction' ]
     },
