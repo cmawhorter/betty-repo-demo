@@ -13,6 +13,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "betty": "github:cmawhorter/betty"
+    "betty": "github:cmawhorter/betty",
+    "waterfall": "github:cmawhorter/waterfall"
   }
 }

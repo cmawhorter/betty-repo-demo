@@ -1,3 +1,4 @@
+import waterfall from 'waterfall';
 import { read as s3Read, write as s3Write } from './lib/s3.js';
 import processResourceJson from './lib/resource.js';
 
@@ -19,10 +20,14 @@ export default {
         return s3Read(bucket, keyPrefix, body.name, body.version, callback);
       case 'publish':
         let data = processResourceJson(body.resource);
-        return s3Write(bucket, keyPrefix, data, 'latest', (err) => {
-          if (err) return callback(err);
-          s3Write(bucket, keyPrefix, data, body.version, callback);
-        });
+        waterfall({
+          latest: (state, next) => {
+            s3Write(bucket, keyPrefix, data, 'latest', next);
+          },
+          versioned: (state, next) => {
+            s3Write(bucket, keyPrefix, data, body.version, next);
+          },
+        }, callback);
       default:
         return callback(new Error(`unsupported method: ${method}`));
     }
