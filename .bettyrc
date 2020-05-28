@@ -1,5 +1,0 @@
-{
-  "registry": {
-    "command": "./node_modules/.bin/betty registry"
-  }
-}

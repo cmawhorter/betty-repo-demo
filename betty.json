@@ -1,0 +1,22 @@
+// this file can be betty.js or betty.json (with comments)
+// if doing betty.js be sure to use module.exports = { ... }
+{
+  "aws": {
+    // v1.x. deprecated in v2.x
+    // use this to provide a base lambda execution role
+    // aws typically defaults to AWSLambdaBasicExecutionRole
+    // but you can create your own based on that to provide
+    // custom global permissions e.g. centralized error alerting
+    // "global_policy": "MyCustomBaseLambdaExecRole"
+  },
+  "build": {
+    // v1.x only; support removed completed in v2.x
+    // sometimes deps don't play nice with bundlers
+    // and they can be put here and they'll be installed
+    // using the selected package manager and shipped
+    // normally as node_modules within the lambda package
+    "unbundled": {
+      // "joi": "*"
+    }
+  }
+}

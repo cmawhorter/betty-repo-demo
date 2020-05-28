@@ -1,24 +1,26 @@
+// this file can be resource.js or resource.json (with comments)
+
 if (!global.betty) throw new Error('depends on betty context to be correct');
 
-// some reusable values for the sake of laziness.  not required to do this.
-const NAME     = 'central-internal-resource-registry';
+const NAME     = 'betty-demo-function';
 const REGIONS  = [ 'us-west-2', 'us-east-1' ];
 
 module.exports = {
-  // which regions will have this resource available.  it mainly impacts the IAM policies
-  // that are generated.  it does not impact update/deploy, which is manually controlled
+  // which regions will have this resource available
+  //   - in v1.x this did not impact update/deploy and instead mainly impacted the IAM policies
+  //   - in v2.x this **does** impact update/deploy and replica functions will automatically get uploaded to the regions defined here
   region:             REGIONS,
-  // required.  becomes the resource id in the registry as well as the lambda function name (if applicable)
+  // regions: [], // v2.x alias for region
+  // required.  the lambda function name
   name:               NAME,
-  // same as package.json
-  description:        'A central registry for internal microservices (resources).',
-  // where the source code behind this resource.js(on) file lives
-  // same as package.json
+  // optional. the lambda function description
+  description:        'A demo function for betty lambda manager',
+  // identify the repository for this project
   repository: {
     type:             'git',
     url:              'git://github.com/cmawhorter/betty-repo-demo.git'
   },
-  // same as package.json
+  // identify the primary author of this project
   author: {
     name:             'Cory Mawhorter',
     email:            'cory.mawhorter@gmail.com',
@@ -32,41 +34,50 @@ module.exports = {
   configuration: {
     memory:             128,
     timeout:            15,
+    runtime:            'nodejs12.x',
     source:             'src/main.js',
     main:               'dist/index.js',
     entry:              'index.handler',
-    environment:        require(`${betty.utils.cwd}/env-${betty.env}.json`)
+    // if you're using resource.js (instead of resource.json) you can do this:
+    environment:        require(`${betty.utils.cwd}/env.json`)
   },
   // what aws services does this resource require internally?  and what permissions?
   // these get automatically added as inline policies to this resource's role
   // there also should (not required) be a directory called "provision" that contains
   // scripts that create these resources from scratch, if needed
   assets: [
-    {
-      service:          's3',
-      name:             `${NAME}-${betty.aws.accountId}/*`,
-      permissions:      [ 's3:GetObject', 's3:PutObject' ]
-    }
+    // {
+    //   service:          's3',
+    //   name:             `${NAME}-${betty.aws.accountId}/*`,
+    //   permissions:      [ 's3:GetObject', 's3:PutObject' ]
+    // }
   ],
-  // this is turned into a managed policy that downstream resources will have added to their
-  // respective roles.  if this resource had resources, it would also need their respective manage policies
-  // added before it could use them
+  // optional
+  // if included, a policy will be automatically created for this service
+  // that can be attached to consumers and give them the necessary permissions.
+  // works automatically in conjunction with resources below
   policy: [
     {
       service:          'lambda',
       region:           REGIONS,
-      name:             `${NAME}`,
+      name:             NAME,
       permissions:      [ 'lambda:InvokeFunction' ]
     },
+    // you could also include other permissions unrelated to lambda
+    // e.g. sqs queue instead of direct invoke
   ],
+  // optional
   resources: {
-    // if this resource had dependencies on other resources, they'd be listed here
-    // similar to package.json, but not semver
+    // other betty projects this service depends on.
+    // including another service here will have the effect of attaching that
+    // services policy to this service.
+    // a side effect of the policy/resources relationship is you can build
+    // a dependency tree for each service
     // 'some-image-processing-dependency': '*'
   },
-  // if this resource will be used by other resources there should be an
-  // npm-installable api client string here.  e.g. github repo
-  // i.e. you should be able to `npm install require('resource.js').client --save`
+  // if a client is available to simplify interacting with this service
+  // it can be defined here. nothing is enforced here but it's recommended
+  // to make this an npm-installable string
   client:               'github:cmawhorter/betty-repo-demo-client',
   // there should be some way to monitor whether this resource is in a healthy
   // state or not.  ideally a website.

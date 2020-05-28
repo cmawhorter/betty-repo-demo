@@ -1,35 +1,6 @@
-import waterfall from 'waterfall';
-import { read as s3Read, write as s3Write } from './lib/s3.js';
-import processResourceJson from './lib/resource.js';
+const handler = async (event, context) => {
+  console.log('event', event);
+  return `Hello world! ${new Date().toISOString()}`;
+};
 
-const BUCKET_ROOT_NAME  = 'central-internal-resource-registry';
-
-export default {
-  handler: (event, context, callback) => {
-    let method      = event.method;
-    let body        = event.body;
-    let accountId   = context.invokedFunctionArn.split(':')[4];
-    let bucket      = `${BUCKET_ROOT_NAME}-${accountId}`;
-    let keyPrefix   = process.env.BUCKET_PREFIX;
-    if (!keyPrefix) return callback(new Error('cannot continue because key prefix is not set'));
-    console.log('Event',      event);
-    console.log('Bucket',     bucket);
-    console.log('Key Prefix', keyPrefix);
-    switch (method) {
-      case 'get':
-        return s3Read(bucket, keyPrefix, body.name, body.version, callback);
-      case 'publish':
-        let data = processResourceJson(body.resource);
-        waterfall({
-          latest: (state, next) => {
-            s3Write(bucket, keyPrefix, data, 'latest', next);
-          },
-          versioned: (state, next) => {
-            s3Write(bucket, keyPrefix, data, body.version, next);
-          },
-        }, callback);
-      default:
-        return callback(new Error(`unsupported method: ${method}`));
-    }
-  }
-}
+export default { handler };

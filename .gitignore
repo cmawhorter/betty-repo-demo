@@ -36,5 +36,3 @@ node_modules
 Thumbs.db
 
 dist
-env-*.json
-.profile
